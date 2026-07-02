@@ -1,0 +1,257 @@
+<!DOCTYPE html><html lang="hi"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Kitchen – RecipeHub</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--or:#f97316;--pu:#a78bfa;--bl:#38bdf8;--gn:#22c55e;--bg:#0b1120;--card:#111827;--card2:#1e293b}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:#fff;overflow-x:hidden}
+@keyframes up{from{transform:translateY(28px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes sd{from{transform:translateY(-60px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pop{0%{transform:scale(.7);opacity:0}80%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.nav{display:flex;justify-content:space-between;align-items:center;padding:14px 52px;background:rgba(11,17,32,.95);position:sticky;top:0;z-index:100;backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.06);animation:sd .5s ease}
+.logo{font-size:20px;font-weight:900;text-decoration:none;color:#fff}.logo span{color:var(--or)}
+.nav-links{display:flex;align-items:center;gap:2px}
+.nav-links a{color:rgba(255,255,255,.65);text-decoration:none;padding:7px 13px;border-radius:9px;font-size:13px;font-weight:500;transition:all .2s}
+.nav-links a:hover{color:#fff;background:rgba(255,255,255,.07)}
+.nav-links a.act{color:var(--pu)}
+.nbtn{padding:8px 18px!important;border-radius:10px!important;font-weight:700!important}
+.nlogin{border:1.5px solid var(--bl)!important;color:var(--bl)!important}.nlogin:hover{background:var(--bl)!important;color:#0b1120!important}
+.nreg{background:linear-gradient(135deg,var(--or),#7c3aed)!important;color:#fff!important}
+.nout{border:1.5px solid rgba(239,68,68,.6)!important;color:#ef4444!important;margin-left:6px!important}.nout:hover{background:#ef4444!important;color:#fff!important}
+/* HERO */
+.ph{padding:60px 60px 36px;background:linear-gradient(135deg,#1a0a3c,#0b1120);text-align:center;border-bottom:1px solid rgba(255,255,255,.06);position:relative;overflow:hidden}
+.ph::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:500px;height:500px;background:radial-gradient(circle,rgba(167,139,250,.12),transparent 70%);border-radius:50%}
+.ph-in{position:relative;z-index:2}
+.ai-icon{font-size:56px;display:block;margin-bottom:16px;animation:up .6s ease}
+.ph h1{font-size:38px;font-weight:900;margin-bottom:10px;animation:up .7s ease}
+.ph h1 span{color:var(--pu)}
+.ph p{color:rgba(255,255,255,.5);font-size:15px;animation:up .8s ease}
+.sec{padding:44px 60px}
+.ai-wrap{max-width:700px;margin:0 auto}
+/* INPUT BOX */
+.ai-box{background:var(--card);border-radius:24px;padding:32px;border:1px solid rgba(167,139,250,.18);animation:up .6s ease;margin-bottom:32px;position:relative;overflow:hidden}
+.ai-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--pu),var(--bl),var(--or));border-radius:24px 24px 0 0}
+.ai-box h2{font-size:18px;font-weight:800;margin-bottom:6px;color:var(--pu)}
+.ai-box-sub{font-size:13px;color:rgba(255,255,255,.4);margin-bottom:20px}
+/* CHIPS */
+.chip-label{font-size:11px;font-weight:700;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.chip{padding:7px 15px;border-radius:50px;background:var(--card2);border:1.5px solid rgba(255,255,255,.09);color:rgba(255,255,255,.6);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;user-select:none;display:flex;align-items:center;gap:5px}
+.chip:hover{border-color:rgba(167,139,250,.4);color:var(--pu)}
+.chip.sel{background:rgba(167,139,250,.15);border-color:var(--pu);color:var(--pu)}
+.chip.sel::after{content:'✓';font-size:10px;margin-left:2px}
+/* INPUT */
+.ing-row{display:flex;gap:10px;margin-bottom:16px}
+.ing-inp{flex:1;padding:13px 18px;background:var(--card2);border:1.5px solid rgba(255,255,255,.09);border-radius:12px;color:#fff;font-size:14px;outline:none;font-family:inherit;transition:border .2s}
+.ing-inp:focus{border-color:var(--pu)}.ing-inp::placeholder{color:rgba(255,255,255,.28)}
+.clear-ing{padding:13px 16px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.09);border-radius:12px;color:rgba(255,255,255,.5);cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;white-space:nowrap}
+.clear-ing:hover{color:#fff;border-color:rgba(255,255,255,.2)}
+.gen-btn{width:100%;padding:15px;background:linear-gradient(135deg,#7c3aed,var(--pu));border:none;color:#fff;font-weight:700;font-size:15px;border-radius:13px;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:10px}
+.gen-btn:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(124,58,237,.4)}
+.gen-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+/* LOADER */
+.loader{display:none;text-align:center;padding:18px;color:rgba(255,255,255,.45);font-size:14px}
+.spin-icon{display:inline-block;animation:spin 1s linear infinite;margin-right:6px}
+/* USED INGREDIENTS */
+.used-bar{background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.18);border-radius:12px;padding:12px 18px;margin-bottom:20px;font-size:13px;color:rgba(255,255,255,.6);animation:up .4s ease}
+.used-bar strong{color:var(--pu)}
+/* RESULTS */
+.res-title{font-size:22px;font-weight:900;margin-bottom:20px;animation:up .4s ease}
+.res-title span{color:var(--pu)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
+.rc{background:var(--card);border-radius:18px;padding:24px;border:1px solid rgba(167,139,250,.12);transition:all .3s;animation:pop .45s ease both;cursor:default;position:relative;overflow:hidden}
+.rc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--pu),var(--bl))}
+.rc:hover{transform:translateY(-8px);border-color:var(--pu);box-shadow:0 12px 36px rgba(124,58,237,.25)}
+.rc-icon{font-size:40px;margin-bottom:12px}
+.rc h3{font-size:16px;font-weight:700;margin-bottom:6px}
+.rc p{font-size:13px;color:rgba(255,255,255,.5);line-height:1.5;margin-bottom:12px}
+.rc-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}
+.rc-tag{padding:3px 10px;border-radius:50px;font-size:11px;font-weight:600;background:rgba(167,139,250,.14);color:var(--pu);border:1px solid rgba(167,139,250,.28)}
+.rc-time{font-size:11px;color:rgba(255,255,255,.35)}
+.try-link{font-size:11px;font-weight:700;color:var(--or);text-decoration:none;padding:4px 10px;border-radius:8px;border:1px solid rgba(249,115,22,.25);transition:all .2s}
+.try-link:hover{background:rgba(249,115,22,.15)}
+/* NO RESULT */
+.no-res{text-align:center;padding:40px;color:rgba(255,255,255,.4)}
+.no-res div{font-size:48px;margin-bottom:12px}
+/* HOW TO */
+.how-box{background:var(--card);border-radius:20px;padding:28px;border:1px solid rgba(255,255,255,.06);margin-top:32px;animation:up .8s ease}
+.how-box h3{font-size:16px;font-weight:800;margin-bottom:18px;color:rgba(255,255,255,.7)}
+.how-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:600px){.how-steps{grid-template-columns:1fr}}
+.how-step{text-align:center;padding:16px}
+.how-num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,var(--pu));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;margin:0 auto 10px}
+.how-step p{font-size:13px;color:rgba(255,255,255,.5);line-height:1.5}
+</style></head><body>
+
+<nav class="nav">
+  <a href="/" class="logo">🍳 Recipe<span>Hub</span></a>
+  <div class="nav-links">
+    {% if user.is_authenticated %}
+      <a href="/">Home</a>
+      <a href="/recipes/">Recipes</a>
+      <a href="/recipes/add/">+ Add Recipe</a>
+      <a href="/ai-kitchen/" class="act">🤖 AI Kitchen</a>
+      <a href="/chat/">Chat</a>
+      <a href="/profile/">Profile</a>
+      <a href="/logout/" class="nbtn nout">Logout</a>
+    {% else %}
+      <a href="/recipes/">Recipes</a>
+      <a href="/ai-kitchen/" class="act">🤖 AI Kitchen</a>
+      <a href="/login/" class="nbtn nlogin">Login</a>
+      <a href="/register/" class="nbtn nreg">Register</a>
+    {% endif %}
+  </div>
+</nav>
+
+<div class="ph">
+  <div class="ph-in">
+    <span class="ai-icon">🤖</span>
+    <h1>AI <span>Kitchen</span></h1>
+<p>Add your ingredients — AI will instantly suggest the best recipes!</p> 
+ </div>
+</div>
+
+<div class="sec">
+  <div class="ai-wrap">
+    <div class="ai-box">
+      <h2>✨ What ingredients do you have?</h2>
+
+<div class="ai-box-sub">
+  Click the chips or type below — both work perfectly!
+</div>
+
+      <div class="chip-label">⚡ Quick Select</div>
+      <div class="chips">
+    <span class="chip" data-val="potato">🥔 Potato</span>
+    <span class="chip" data-val="paneer">🧀 Paneer</span>
+    <span class="chip" data-val="tomato">🍅 Tomato</span>
+    <span class="chip" data-val="onion">🧅 Onion</span>
+    <span class="chip" data-val="rice">🍚 Rice</span>
+    <span class="chip" data-val="egg">🥚 Egg</span>
+    <span class="chip" data-val="chicken">🍗 Chicken</span>
+    <span class="chip" data-val="flour">🌾 Flour</span>
+    <span class="chip" data-val="milk">🥛 Milk</span>
+    <span class="chip" data-val="spinach">🥬 Spinach</span>
+    <span class="chip" data-val="peas">🫛 Peas</span>
+    <span class="chip" data-val="sugar">🍬 Sugar</span>
+    <span class="chip" data-val="gramflour">🟡 Gram Flour</span>
+    <span class="chip" data-val="lentils">🍲 Lentils</span>
+    <span class="chip" data-val="cream">🫙 Cream</span>
+    <span class="chip" data-val="capsicum">🫑 Capsicum</span>
+    <span class="chip" data-val="eggplant">🍆 Eggplant</span>
+    <span class="chip" data-val="cauliflower">🥦 Cauliflower</span>
+    <span class="chip" data-val="rajma">🫘 Rajma</span>
+    <span class="chip" data-val="semolina">🌾 Semolina</span>
+    <span class="chip" data-val="oats">🥣 Oats</span>
+</div>
+    
+
+      <form method="POST" id="aiForm">
+        {% csrf_token %}
+        <div class="ing-row">
+<input 
+  class="ing-inp" 
+  name="ingredients" 
+  id="ingInp" 
+  placeholder="Or type here: paneer, tomato, onion..." 
+  value="{{ used }}"
+>          <button type="button" class="clear-ing" onclick="clearAll()">✕ Clear</button>
+        </div>
+        <button class="gen-btn" type="submit" id="genBtn">
+          <span id="btnIcon">🤖</span>
+<span id="btnText">Get Recipe Suggestions!</span>
+        </button>
+      </form>
+<div class="loader" id="loader">
+  <span class="spin-icon">⚙️</span>
+  AI is thinking...
+</div>    </div>
+
+    {% if suggestions %}
+    {% if used %}
+    <div class="used-bar">🔍 Your ingredients: <strong>{{ used }}</strong></div>
+    {% endif %}
+<div class="res-title">
+  🍳 <span>{{ suggestions|length }} Recipes</span> Found For You!
+</div>    <div class="grid">
+      {% for s in suggestions %}
+<div class="rc" style="--i: {{ forloop.counter0 }};">
+          <div class="rc-icon">🍲</div>
+          <h3>{{ s.name }}</h3>
+        <p>{{ s.desc }}</p>
+        <div class="rc-footer">
+          <span class="rc-tag">🤖 AI Suggested</span>
+          {% if s.time %}<span class="rc-time">⏱ {{ s.time }}</span>{% endif %}
+          <a href="/recipes/?cat={{ s.cat }}" class="try-link">Browse →</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% elif request.method == "POST" %}
+    <div class="no-res"><div>🤔</div><p style="font-size:15px">No suggestions found.<br>Try different ingredients!</p></div>
+    {% endif %}
+
+    <!-- HOW IT WORKS -->
+    <div class="how-box">
+      <h3>🤔 How It Works?</h3>
+      <div class="how-steps">
+
+  <div class="how-step">
+    <div class="how-num">1</div>
+    <p>Select ingredients from the chips or type them manually</p>
+  </div>
+
+  <div class="how-step">
+    <div class="how-num">2</div>
+    <p>AI matches your ingredients with a 30+ recipe database</p>
+  </div>
+
+  <div class="how-step">
+    <div class="how-num">3</div>
+    <p>Instantly suggests the best matching recipes!</p>
+  </div>
+
+</div>
+    </div>
+  </div>
+</div>
+
+<script>
+let sel=[];
+// Restore chips from existing value
+const existing=document.getElementById('ingInp').value;
+if(existing){
+  existing.split(',').forEach(v=>{
+    const t=v.trim();
+    document.querySelectorAll('.chip').forEach(c=>{
+      if(c.dataset.val===t){c.classList.add('sel');if(!sel.includes(t))sel.push(t);}
+    });
+  });
+}
+document.querySelectorAll('.chip').forEach(c=>{
+  c.addEventListener('click',()=>{
+    const v=c.dataset.val;
+    c.classList.toggle('sel');
+    if(sel.includes(v))sel=sel.filter(x=>x!==v);
+    else sel.push(v);
+    document.getElementById('ingInp').value=sel.join(', ');
+  });
+});
+function clearAll(){
+  sel=[];
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('ingInp').value='';
+}
+document.getElementById('aiForm').addEventListener('submit',function(){
+  const inp=document.getElementById('ingInp').value.trim();
+  if(!inp){alert('Please enter some ingredients!');return false;}
+  document.getElementById('genBtn').disabled=true;
+  document.getElementById('btnIcon').textContent='⚙️';
+  document.getElementById('btnText').textContent='processing...';
+  document.getElementById('btnIcon').style.animation='spin 1s linear infinite';
+  document.getElementById('loader').style.display='block';
+});
+</script>
+</body></html>

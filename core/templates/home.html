@@ -1,0 +1,521 @@
+<!DOCTYPE html><html lang="hi"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RecipeHub – Recipe Generator</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--or:#f97316;--pu:#a78bfa;--bl:#38bdf8;--gn:#22c55e;--bg:#0b1120;--card:#111827;--card2:#1e293b}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:#fff;overflow-x:hidden}
+@keyframes up{from{transform:translateY(32px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes sd{from{transform:translateY(-60px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* NAV */
+.nav{display:flex;justify-content:space-between;align-items:center;padding:14px 52px;background:rgba(11,17,32,.95);position:sticky;top:0;z-index:100;backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.06);animation:sd .5s ease}
+.logo{font-size:20px;font-weight:900;text-decoration:none;color:#fff}.logo span{color:var(--or)}
+.nav-links{display:flex;align-items:center;gap:2px}
+.nav-links a{color:rgba(255,255,255,.65);text-decoration:none;padding:7px 13px;border-radius:9px;font-size:13px;font-weight:500;transition:all .2s}
+.nav-links a:hover{color:#fff;background:rgba(255,255,255,.07)}
+.nav-links a.act{color:var(--or)}
+.nbtn{padding:8px 18px!important;border-radius:10px!important;font-weight:700!important;font-size:13px!important}
+.nlogin{border:1.5px solid var(--bl)!important;color:var(--bl)!important}
+.nlogin:hover{background:var(--bl)!important;color:#0b1120!important}
+.nreg{background:linear-gradient(135deg,var(--or),#7c3aed)!important;color:#fff!important}
+.nout{border:1.5px solid rgba(239,68,68,.6)!important;color:#ef4444!important;margin-left:6px!important}
+.nout:hover{background:#ef4444!important;color:#fff!important}
+/* HERO */
+.hero{padding:96px 60px 80px;background:linear-gradient(135deg,#1a0a3c 0%,#0b1120 50%,#0a1525 100%);position:relative;overflow:hidden}
+.hero::before,.hero::after{content:'';position:absolute;border-radius:50%}
+.hero::before{top:-120px;right:-120px;width:600px;height:600px;background:radial-gradient(circle,rgba(249,115,22,.13),transparent 70%);animation:pulse 5s ease-in-out infinite}
+.hero::after{bottom:-100px;left:-100px;width:500px;height:500px;background:radial-gradient(circle,rgba(124,58,237,.1),transparent 70%);animation:pulse 5s ease-in-out infinite 2.5s}
+.hero-in{position:relative;z-index:2;max-width:760px;animation:up .8s ease}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:7px 18px;background:rgba(249,115,22,.14);border:1px solid rgba(249,115,22,.32);border-radius:50px;font-size:12px;color:var(--or);font-weight:700;margin-bottom:24px}
+.badge-dot{width:7px;height:7px;background:var(--or);border-radius:50%;animation:pulse 1.5s infinite}
+h1.htitle{font-size:58px;font-weight:900;line-height:1.1;letter-spacing:-1.5px;margin-bottom:22px}
+.htitle .o{color:var(--or)}.htitle .p{color:var(--pu)}
+.hero-sub{font-size:17px;color:rgba(255,255,255,.6);line-height:1.8;max-width:580px;margin-bottom:36px}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 30px;border-radius:14px;font-weight:700;font-size:15px;text-decoration:none;transition:all .25s;border:none;cursor:pointer}
+.btn-or{background:linear-gradient(135deg,var(--or),#ea580c);color:#fff;box-shadow:0 6px 28px rgba(249,115,22,.3)}
+.btn-or:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(249,115,22,.5)}
+.btn-out{border:2px solid rgba(255,255,255,.18)!important;color:#fff;background:transparent}
+.btn-out:hover{border-color:var(--bl)!important;color:var(--bl);transform:translateY(-3px)}
+.stats{display:flex;gap:44px;margin-top:52px}
+.stat-n{font-size:30px;font-weight:900;color:var(--or)}.stat-l{font-size:12px;color:rgba(255,255,255,.4);margin-top:2px}
+/* FLOATING EMOJIS */
+.floaters{position:absolute;right:80px;top:50%;transform:translateY(-50%);z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.floater{width:72px;height:72px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:32px;animation:float 3s ease-in-out infinite}
+.floater:nth-child(2){animation-delay:.5s}.floater:nth-child(3){animation-delay:1s}.floater:nth-child(4){animation-delay:1.5s}
+/* SECTIONS */
+.sec{padding:64px 60px}
+.sec-t{font-size:28px;font-weight:900;margin-bottom:28px}.sec-t span{color:var(--or)}
+/* RECIPE GRID */
+.rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
+.rcard{background:var(--card);border-radius:20px;overflow:hidden;text-decoration:none;color:inherit;transition:all .35s;display:block;animation:up .5s ease both}
+.rcard:hover{transform:translateY(-10px) scale(1.02);box-shadow:0 18px 48px rgba(0,0,0,.5)}
+.rthumb{height:140px;display:flex;align-items:center;justify-content:center;font-size:52px;position:relative;overflow:hidden}
+.rthumb::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.3),transparent)}
+.rbody{padding:18px}
+.rbody h3{font-size:16px;font-weight:700;margin-bottom:5px}
+.rmeta{font-size:12px;color:rgba(255,255,255,.4);margin-bottom:10px}
+.rtag{display:inline-block;padding:3px 9px;border-radius:50px;font-size:11px;font-weight:600;background:rgba(249,115,22,.14);color:var(--or);border:1px solid rgba(249,115,22,.28)}
+.rtag-b{background:rgba(56,189,248,.12);color:var(--bl);border-color:rgba(56,189,248,.25)}
+/* FEATURE CARDS */
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
+.fcard{background:var(--card);padding:28px;border-radius:20px;border:1px solid rgba(255,255,255,.05);transition:all .3s;animation:up .6s ease both}
+.fcard:hover{transform:translateY(-8px);background:var(--card2);border-color:rgba(249,115,22,.2)}
+.fcard-icon{font-size:36px;margin-bottom:14px}.fcard h3{font-size:16px;font-weight:700;margin-bottom:7px}
+.fcard p{font-size:13px;color:rgba(255,255,255,.5);line-height:1.6}
+/* TOP RECIPES */
+.top-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.top-card{background:var(--card);border-radius:20px;padding:24px;display:flex;align-items:center;gap:18px;text-decoration:none;color:inherit;transition:all .3s;border:1px solid rgba(255,255,255,.05)}
+.top-card:hover{background:var(--card2);transform:translateX(6px)}
+.top-rank{font-size:28px;font-weight:900;color:var(--or);min-width:36px}
+.top-emoji{font-size:36px}.top-name{font-size:15px;font-weight:700;margin-bottom:4px}
+.top-meta{font-size:12px;color:rgba(255,255,255,.4)}
+/* BANNER */
+.banner{border-radius:28px;padding:64px 40px;text-align:center;background:linear-gradient(135deg,#1e3a5f,#1e0a3c);border:1px solid rgba(255,255,255,.07)}
+.banner h2{font-size:34px;font-weight:900;margin-bottom:12px}.banner p{color:rgba(255,255,255,.5);margin-bottom:28px;font-size:15px}
+/* FOOTER */
+.footer{padding:44px 60px;background:#070c18;text-align:center;border-top:1px solid rgba(255,255,255,.05)}
+.footer h3{font-size:20px;font-weight:800;margin-bottom:6px}.footer p{color:rgba(255,255,255,.3);font-size:12px}
+/* SCROLL ANIM */
+.fi{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease}
+.fi.v{opacity:1;transform:none}
+/* GRADIENT HELPERS */
+.g-or{background:linear-gradient(135deg,#ea580c,var(--or))}
+.g-bl{background:linear-gradient(135deg,#2563eb,var(--bl))}
+.g-pu{background:linear-gradient(135deg,#7c3aed,var(--pu))}
+.g-gn{background:linear-gradient(135deg,#059669,var(--gn))}
+.g-pk{background:linear-gradient(135deg,#db2777,var(--or))}
+</style>
+</head><body>
+
+<nav class="nav">
+
+  <a href="/" class="logo">
+    🍳 Recipe<span>Hub</span>
+  </a>
+
+  <div class="nav-links">
+
+    {% if user.is_authenticated %}
+
+      <a href="/" class="act">Home</a>
+
+      <a href="/recipes/">
+        Recipes
+      </a>
+
+      <a href="/recipes/add/">
+        + Add Recipe
+      </a>
+
+      <a href="/ai-kitchen/">
+        🤖 AI Kitchen
+      </a>
+
+      <a href="/chat/">
+        Chat
+      </a>
+
+      <a href="/profile/">
+        Profile
+      </a>
+
+      <form action="/logout/" method="post" style="display:inline;">
+  {% csrf_token %}
+
+  <button type="submit" class="nbtn nout"
+    style="background:none;cursor:pointer;">
+
+    Logout
+
+  </button>
+</form>
+
+    {% else %}
+
+      <a href="/" class="act">
+        Home
+      </a>
+
+      <a href="/login/" class="nbtn nlogin">
+        Login
+      </a>
+
+      <a href="/register/" class="nbtn nreg">
+        Register
+      </a>
+
+    {% endif %}
+
+  </div>
+
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-in">
+
+  <div class="badge">
+    <span class="badge-dot"></span>
+    India's #1 Recipe Platform
+  </div>
+
+  <h1 class="htitle">
+    Discover, Cook &<br>
+    <span class="o">Generate</span> 
+    <span class="p">Recipes</span>
+  </h1>
+
+  <p class="hero-sub">
+    Add your ingredients — AI will instantly generate recipes. 
+    Or explore thousands of community recipes!
+  </p>
+
+  <div class="hero-btns">
+    <a href="/ai-kitchen/" class="btn btn-or">
+      🤖 Generate Recipe With AI
+    </a>
+
+    <a href="/recipes/" class="btn btn-out">
+      📚 Browse Recipes
+    </a>
+  </div>
+
+  <div class="stats">
+    <div>
+      <div class="stat-n">{{ total }}+</div>
+      <div class="stat-l">Recipes</div>
+    </div>
+
+    <div>
+      <div class="stat-n">🤖</div>
+      <div class="stat-l">AI Powered</div>
+    </div>
+
+    <div>
+      <div class="stat-n">Free</div>
+      <div class="stat-l">Forever</div>
+    </div>
+  </div>
+
+</div>
+  <div class="floaters">
+    <div class="floater g-or">🍛</div>
+    <div class="floater g-pu">🍰</div>
+    <div class="floater g-bl">🍕</div>
+    <div class="floater g-gn">🥗</div>
+  </div>
+</div>
+
+<!-- TOP RECIPES -->
+{% if top %}
+<div class="sec fi">
+  <div class="sec-t">🏆 Most <span>Liked</span> Recipes</div>
+  <div class="top-grid">
+    {% for r in top %}
+    <a href="/recipes/{{ r.pk }}/" class="top-card" style="animation-delay:{{ forloop.counter0 }}00ms">
+      <div class="top-rank">#{{ forloop.counter }}</div>
+      <div class="top-emoji">{{ r.emoji }}</div>
+      <div><div class="top-name">{{ r.name }}</div><div class="top-meta">❤️ {{ r.like_count }} likes · {{ r.get_category_display }}</div></div>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<!-- RECENT RECIPES -->
+<div class="sec fi" {% if top %}style="padding-top:0"{% endif %}>
+  <div class="sec-t">🔥 Latest <span>Recipes</span></div>
+  <div class="rgrid">
+    {% for r in recent %}
+    <a href="/recipes/{{ r.pk }}/" class="rcard" style="animation-delay:{{ forloop.counter0 }}00ms">
+      <div class="rthumb {% if r.category == 'indian' %}g-or{% elif r.category == 'italian' %}g-bl{% elif r.category == 'dessert' %}g-pu{% elif r.category == 'healthy' %}g-gn{% else %}g-pk{% endif %}">{{ r.emoji }}</div>
+      <div class="rbody">
+        <h3>{{ r.name }}</h3>
+        <div class="rmeta">By {{ r.author.username }} {% if r.cook_time %}· ⏱ {{ r.cook_time }}{% endif %} · ❤️ {{ r.like_count }}</div>
+        <span class="rtag">{{ r.get_category_display }}</span>
+      </div>
+    </a>
+    {% empty %}
+    <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:rgba(255,255,255,.4)">
+      <div style="font-size:52px;margin-bottom:16px">🍳</div>
+<p style="font-size:16px;margin-bottom:20px">
+  No recipes yet! Be the first to add a recipe.
+</p>      {% if user.is_authenticated %}<a href="/recipes/add/" class="btn btn-or">+ Add Recipe</a>{% else %}<a href="/register/" class="btn btn-or">Join Karo & Add Karo</a>{% endif %}
+    </div>
+    {% endfor %}
+  </div>
+{% if recent %}
+<div style="text-align:center;margin-top:28px">
+  <a href="/recipes/" class="btn btn-out">
+    View All Recipes →
+  </a>
+</div>
+{% endif %}
+``</div>
+
+<!-- FEATURES -->
+<div class="sec fi" style="padding-top:0">
+  <div class="sec-t">⚡ Platform <span>Features</span></div>
+  <div class="fgrid">
+   <div class="fcard" style="animation-delay:0s">
+  <div class="fcard-icon">🤖</div>
+  <h3>AI Recipe Generator</h3>
+  <p>
+    Type your ingredients — AI instantly suggests recipes using 30+ recipe rules.
+  </p>
+</div>
+
+<div class="fcard" style="animation-delay:.1s">
+  <div class="fcard-icon">📚</div>
+  <h3>Recipe Library</h3>
+  <p>
+    Explore community recipes with category filters, search, and like system.
+  </p>
+</div>
+
+<div class="fcard" style="animation-delay:.2s">
+  <div class="fcard-icon">➕</div>
+  <h3>Share Recipe</h3>
+  <p>
+    Share your best family recipes with the community. Ingredients and steps included.
+  </p>
+</div>
+
+<div class="fcard" style="animation-delay:.3s">
+  <div class="fcard-icon">🔖</div>
+  <h3>Recipe Save</h3>
+  <p>
+    Loved a recipe? Save it and access it easily later from your profile.
+  </p>
+</div>
+
+<div class="fcard" style="animation-delay:.4s">
+  <div class="fcard-icon">💬</div>
+  <h3>Community Chat</h3>
+  <p>
+    Talk with food lovers, get tips, and share cooking secrets.
+  </p>
+</div>
+
+<div class="fcard" style="animation-delay:.5s">
+  <div class="fcard-icon">👤</div>
+  <h3>Personal Profile</h3>
+  <p>
+    View your recipes, liked recipes, and saved recipes all in one place.
+  </p>
+</div>
+</div>
+
+<!-- BANNER -->
+<div class="sec fi" style="padding-top:0">
+
+  <div class="banner">
+
+    <h2>🍳 Share Your Recipe Today!</h2>
+
+    <p>
+      Create a free account and share your best recipe with the community.
+    </p>
+
+    {% if user.is_authenticated %}
+      <a href="/recipes/add/" class="btn btn-or">
+        + Add Recipe
+      </a>
+    {% else %}
+      <a href="/register/" class="btn btn-or">
+        🚀 Join Free
+      </a>
+    {% endif %}
+
+  </div>
+</div>
+
+<div class="footer">
+
+  <div class="footer-glow"></div>
+
+  <div class="footer-content">
+
+    <div class="footer-brand">
+      <h3 class="footer-logo">
+        🍳 Recipe<span>Hub</span>
+      </h3>
+
+      <p class="footer-desc">
+        Discover AI-powered recipes, share your favorite dishes, 
+        and connect with food lovers from around the world.
+      </p>
+    </div>
+
+    <div class="footer-links">
+
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <a href="/">Home</a>
+        <a href="/recipes/">Recipes</a>
+        <a href="/ai-kitchen/">AI Kitchen</a>
+        <a href="/chat/">Community Chat</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Account</h4>
+        <a href="/profile/">Profile</a>
+        <a href="/recipes/add/">Add Recipe</a>
+        <a href="/login/">Login</a>
+        <a href="/register/">Register</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Features</h4>
+        <p>🤖 AI Recipe Generator</p>
+        <p>📚 Recipe Library</p>
+        <p>💬 Community Chat</p>
+        <p>🔖 Save Recipes</p>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <p>
+      © 2026 RecipeHub · Built with ❤️ for food lovers worldwide
+    </p>
+  </div>
+
+</div>
+
+<style>
+
+.footer{
+  position:relative;
+  margin-top:80px;
+  padding:70px 60px 25px;
+  background:linear-gradient(135deg,#0f172a,#111827,#1e1b4b);
+  overflow:hidden;
+  border-top:1px solid rgba(255,255,255,.08);
+}
+
+.footer-glow{
+  position:absolute;
+  width:500px;
+  height:500px;
+  background:radial-gradient(circle,rgba(168,85,247,.18),transparent 70%);
+  top:-250px;
+  left:50%;
+  transform:translateX(-50%);
+  animation:floatGlow 6s ease-in-out infinite alternate;
+}
+
+.footer-content{
+  position:relative;
+  z-index:2;
+  display:flex;
+  justify-content:space-between;
+  gap:60px;
+  flex-wrap:wrap;
+}
+
+.footer-brand{
+  max-width:360px;
+}
+
+.footer-logo{
+  font-size:34px;
+  font-weight:900;
+  margin-bottom:16px;
+  color:#fff;
+}
+
+.footer-logo span{
+  color:#f97316;
+}
+
+.footer-desc{
+  color:rgba(255,255,255,.6);
+  line-height:1.8;
+  font-size:14px;
+}
+
+.footer-links{
+  display:flex;
+  gap:60px;
+  flex-wrap:wrap;
+}
+
+.footer-col{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.footer-col h4{
+  color:#fff;
+  margin-bottom:8px;
+  font-size:16px;
+}
+
+.footer-col a,
+.footer-col p{
+  color:rgba(255,255,255,.6);
+  text-decoration:none;
+  font-size:14px;
+  transition:.25s;
+}
+
+.footer-col a:hover{
+  color:#a78bfa;
+  transform:translateX(4px);
+}
+
+.footer-bottom{
+  position:relative;
+  z-index:2;
+  margin-top:50px;
+  padding-top:20px;
+  border-top:1px solid rgba(255,255,255,.08);
+  text-align:center;
+}
+
+.footer-bottom p{
+  color:rgba(255,255,255,.45);
+  font-size:13px;
+  letter-spacing:.4px;
+}
+
+@keyframes floatGlow{
+  from{
+    transform:translateX(-50%) scale(1);
+  }
+  to{
+    transform:translateX(-50%) scale(1.15);
+  }
+}
+
+@media(max-width:768px){
+
+  .footer{
+    padding:60px 25px 20px;
+  }
+
+  .footer-content{
+    flex-direction:column;
+    gap:40px;
+  }
+
+  .footer-links{
+    gap:35px;
+  }
+
+}
+
+</style>
+<script>
+const o=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('v')})},{threshold:.08});
+document.querySelectorAll('.fi').forEach(el=>o.observe(el));
+</script>
+</body></html>

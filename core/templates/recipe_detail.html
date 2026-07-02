@@ -1,0 +1,186 @@
+<!DOCTYPE html><html lang="hi"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ r.name }} – RecipeHub</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--or:#f97316;--pu:#a78bfa;--bl:#38bdf8;--gn:#22c55e;--bg:#0b1120;--card:#111827;--card2:#1e293b}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:#fff;overflow-x:hidden}
+@keyframes up{from{transform:translateY(28px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes sd{from{transform:translateY(-60px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes heartbeat{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
+.nav{display:flex;justify-content:space-between;align-items:center;padding:14px 52px;background:rgba(11,17,32,.95);position:sticky;top:0;z-index:100;backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.06);animation:sd .5s ease}
+.logo{font-size:20px;font-weight:900;text-decoration:none;color:#fff}.logo span{color:var(--or)}
+.nav-links{display:flex;align-items:center;gap:2px}
+.nav-links a{color:rgba(255,255,255,.65);text-decoration:none;padding:7px 13px;border-radius:9px;font-size:13px;font-weight:500;transition:all .2s}
+.nav-links a:hover{color:#fff;background:rgba(255,255,255,.07)}
+.nav-links a.act{color:var(--or)}
+.nbtn{padding:8px 18px!important;border-radius:10px!important;font-weight:700!important}
+.nlogin{border:1.5px solid var(--bl)!important;color:var(--bl)!important}.nlogin:hover{background:var(--bl)!important;color:#0b1120!important}
+.nreg{background:linear-gradient(135deg,var(--or),#7c3aed)!important;color:#fff!important}
+.nout{border:1.5px solid rgba(239,68,68,.6)!important;color:#ef4444!important;margin-left:6px!important}.nout:hover{background:#ef4444!important;color:#fff!important}
+/* HERO */
+.hero{padding:52px 60px 40px;background:linear-gradient(135deg,#1e0a3c,#0b1120);border-bottom:1px solid rgba(255,255,255,.06);animation:up .6s ease}
+.hero-top{display:flex;align-items:flex-start;gap:32px;flex-wrap:wrap}
+.recipe-big-emoji{width:120px;height:120px;border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:60px;flex-shrink:0;position:relative}
+.recipe-big-emoji::after{content:'';position:absolute;inset:-2px;border-radius:26px;border:2px solid rgba(255,255,255,.1)}
+.hero h1{font-size:36px;font-weight:900;margin-bottom:12px;line-height:1.2}
+.tags-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.tag{padding:5px 14px;border-radius:50px;font-size:12px;font-weight:600;background:rgba(255,255,255,.07);color:rgba(255,255,255,.65)}
+.tag-cat{background:rgba(249,115,22,.14);color:var(--or);border:1px solid rgba(249,115,22,.28)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.abtn{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:12px;font-weight:700;font-size:13px;text-decoration:none;cursor:pointer;border:none;transition:all .2s}
+.abtn-like-off{background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);color:rgba(255,255,255,.6)}
+.abtn-like-off:hover{border-color:var(--or);color:var(--or)}
+.abtn-like-on{background:rgba(249,115,22,.15);border:1.5px solid var(--or);color:var(--or)}
+.abtn-like-on:hover{background:var(--or);color:#fff}
+.abtn-save-off{background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);color:rgba(255,255,255,.6)}
+.abtn-save-off:hover{border-color:var(--bl);color:var(--bl)}
+.abtn-save-on{background:rgba(56,189,248,.12);border:1.5px solid var(--bl);color:var(--bl)}
+.abtn-save-on:hover{background:var(--bl);color:#0b1120}
+.abtn-del{background:rgba(239,68,68,.1);border:1.5px solid rgba(239,68,68,.3);color:#ef4444}
+.abtn-del:hover{background:#ef4444;color:#fff}
+.abtn-back{background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.1);color:rgba(255,255,255,.55)}
+.abtn-back:hover{color:#fff}
+.like-heart{display:inline-block;transition:transform .2s}
+/* BODY */
+.body{padding:40px 60px;max-width:960px}
+.desc-box{background:var(--card);border-radius:18px;padding:22px 26px;margin-bottom:28px;font-size:15px;color:rgba(255,255,255,.7);line-height:1.75;border:1px solid rgba(255,255,255,.06)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media(max-width:660px){.grid2{grid-template-columns:1fr}}
+.box{background:var(--card);border-radius:20px;padding:26px;border:1px solid rgba(255,255,255,.06)}
+.box h2{font-size:17px;font-weight:800;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.06)}
+/* INGREDIENT LIST */
+.ing-list{list-style:none;counter-reset:none}
+.ing-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:14px;color:rgba(255,255,255,.8);transition:background .15s}
+.ing-item:last-child{border-bottom:none}
+.ing-check{width:20px;height:20px;border-radius:6px;border:1.5px solid rgba(255,255,255,.2);flex-shrink:0;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;font-size:11px}
+.ing-item.checked .ing-check{background:var(--gn);border-color:var(--gn);color:#fff}
+.ing-item.checked span{text-decoration:line-through;color:rgba(255,255,255,.35)}
+/* STEPS */
+.step-item{display:flex;gap:16px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.step-item:last-child{border-bottom:none}
+.step-num{min-width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--or),#ea580c);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0;margin-top:2px}
+.step-text{font-size:14px;color:rgba(255,255,255,.8);line-height:1.65;padding-top:6px}
+/* SIMILAR */
+.sim-sec{padding:0 60px 48px;max-width:960px}
+.sim-sec h2{font-size:20px;font-weight:800;margin-bottom:20px}
+.sim-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.sim-card{background:var(--card);border-radius:16px;overflow:hidden;text-decoration:none;color:inherit;transition:all .3s;display:block}
+.sim-card:hover{transform:translateY(-6px);box-shadow:0 12px 36px rgba(0,0,0,.4)}
+.sim-thumb{height:100px;display:flex;align-items:center;justify-content:center;font-size:38px}
+.sim-body{padding:14px}.sim-body h4{font-size:14px;font-weight:700;margin-bottom:4px}
+.sim-meta{font-size:11px;color:rgba(255,255,255,.35)}
+</style></head><body>
+
+<nav class="nav">
+  <a href="/" class="logo">🍳 Recipe<span>Hub</span></a>
+  <div class="nav-links">
+    {% if user.is_authenticated %}
+      <a href="/">Home</a>
+      <a href="/recipes/" class="act">Recipes</a>
+      <a href="/recipes/add/">+ Add Recipe</a>
+      <a href="/ai-kitchen/">🤖 AI Kitchen</a>
+      <a href="/chat/">Chat</a>
+      <a href="/profile/">Profile</a>
+      <a href="/logout/" class="nbtn nout">Logout</a>
+    {% else %}
+      <a href="/recipes/" class="act">Recipes</a>
+      <a href="/ai-kitchen/">🤖 AI Kitchen</a>
+      <a href="/login/" class="nbtn nlogin">Login</a>
+      <a href="/register/" class="nbtn nreg">Register</a>
+    {% endif %}
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-top">
+    <div class="recipe-big-emoji" style="background:linear-gradient(135deg,{% if r.category == 'indian' %}#ea580c,#f97316{% elif r.category == 'italian' %}#2563eb,#38bdf8{% elif r.category == 'dessert' %}#7c3aed,#a78bfa{% elif r.category == 'healthy' %}#059669,#22c55e{% else %}#db2777,#f97316{% endif %})">{{ r.emoji }}</div>
+    <div style="flex:1">
+      <h1>{{ r.name }}</h1>
+      <div class="tags-row">
+        <span class="tag tag-cat">{{ r.get_category_display }}</span>
+        <span class="tag">👨‍🍳 {{ r.author.username }}</span>
+        {% if r.cook_time %}<span class="tag">⏱ {{ r.cook_time }}</span>{% endif %}
+        <span class="tag">❤️ {{ r.like_count }} likes</span>
+      </div>
+      <div class="actions">
+        <a href="/recipes/" class="abtn abtn-back">← Back</a>
+        {% if user.is_authenticated %}
+          <a href="/recipes/{{ r.pk }}/like/" class="abtn {% if liked %}abtn-like-on{% else %}abtn-like-off{% endif %}" id="likeBtn">
+            <span class="like-heart">{% if liked %}❤️{% else %}🤍{% endif %}</span>
+            {% if liked %}Liked ({{ r.like_count }}){% else %}Like ({{ r.like_count }}){% endif %}
+          </a>
+          <a href="/recipes/{{ r.pk }}/save/" class="abtn {% if saved %}abtn-save-on{% else %}abtn-save-off{% endif %}">
+            {% if saved %}🔖 Saved{% else %}🔖 Save{% endif %}
+          </a>
+          {% if user == r.author %}
+          <a href="/recipes/{{ r.pk }}/delete/" class="abtn abtn-del" onclick="return confirm(' want to delete this recipe?')">🗑 Delete</a>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="body">
+  {% if r.description %}
+  <div class="desc-box">💬 {{ r.description }}</div>
+  {% endif %}
+
+  <div class="grid2">
+    <div class="box">
+      <h2>🛒 Ingredients <span style="font-size:13px;color:rgba(255,255,255,.35);font-weight:400">(tick karo jo hai)</span></h2>
+      <ul class="ing-list" id="ingList">
+        {% for ing in ings %}
+        <li class="ing-item" onclick="toggleIng(this)">
+          <div class="ing-check" id="chk-{{ forloop.counter }}">✓</div>
+          <span>{{ ing }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="box">
+      <h2>📋 Steps</h2>
+      <div>
+        {% for step in steps %}
+        <div class="step-item">
+          <div class="step-num">{{ forloop.counter }}</div>
+          <div class="step-text">{{ step }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if similar %}
+<div class="sim-sec">
+  <h2>🍽️ Similar Recipes</h2>
+  <div class="sim-grid">
+    {% for s in similar %}
+    <a href="/recipes/{{ s.pk }}/" class="sim-card">
+      <div class="sim-thumb" style="background:linear-gradient(135deg,{% if s.category == 'indian' %}#ea580c,#f97316{% elif s.category == 'italian' %}#2563eb,#38bdf8{% elif s.category == 'dessert' %}#7c3aed,#a78bfa{% elif s.category == 'healthy' %}#059669,#22c55e{% else %}#db2777,#f97316{% endif %})">{{ s.emoji }}</div>
+      <div class="sim-body"><h4>{{ s.name }}</h4><div class="sim-meta">❤️ {{ s.like_count }} · {{ s.get_category_display }}</div></div>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<script>
+function toggleIng(el){
+  el.classList.toggle('checked');
+  const chk=el.querySelector('.ing-check');
+  chk.style.display='flex';
+}
+// Animate like button
+const lb=document.getElementById('likeBtn');
+if(lb){
+  lb.addEventListener('click',function(e){
+    const h=this.querySelector('.like-heart');
+    h.style.animation='heartbeat .3s ease';
+    setTimeout(()=>h.style.animation='',400);
+  });
+}
+</script>
+</body></html>

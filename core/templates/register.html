@@ -1,0 +1,42 @@
+<!DOCTYPE html><html lang="hi"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Register – RecipeHub</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--or:#f97316;--pu:#a78bfa;--bl:#38bdf8;--bg:#0b1120;--card:#111827;--card2:#1e293b}
+body{font-family:'Segoe UI',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);position:relative;overflow:hidden;padding:30px 0}
+body::before{content:'';position:absolute;top:-80px;left:-80px;width:500px;height:500px;background:radial-gradient(circle,rgba(167,139,250,.1),transparent 70%);border-radius:50%}
+body::after{content:'';position:absolute;bottom:-80px;right:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(249,115,22,.08),transparent 70%);border-radius:50%}
+@keyframes up{from{transform:translateY(28px);opacity:0}to{transform:translateY(0);opacity:1}}
+.box{width:460px;background:var(--card);border-radius:24px;padding:44px;border:1px solid rgba(255,255,255,.07);z-index:1;animation:up .6s ease;position:relative;overflow:hidden}
+.box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--pu),#7c3aed)}
+.logo{font-size:20px;font-weight:900;color:#fff;text-decoration:none;display:block;margin-bottom:28px}.logo span{color:var(--or)}
+h1{font-size:26px;font-weight:900;margin-bottom:5px}
+.sub{font-size:13px;color:rgba(255,255,255,.4);margin-bottom:28px}
+p{margin-bottom:14px}
+p label{display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px}
+p input{width:100%;padding:13px 16px;background:var(--card2);border:1.5px solid rgba(255,255,255,.09);border-radius:11px;color:#fff;font-size:14px;outline:none;font-family:inherit;transition:border .2s}
+p input:focus{border-color:var(--pu)}
+.helptext{font-size:11px;color:rgba(255,255,255,.22);margin-top:4px;display:block}
+ul.errorlist{list-style:none;margin-top:4px}ul.errorlist li{font-size:11px;color:#ef4444}
+.btn{width:100%;padding:14px;background:linear-gradient(135deg,#7c3aed,var(--pu));border:none;color:#fff;font-weight:700;font-size:15px;border-radius:12px;cursor:pointer;transition:all .25s;margin-top:6px}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(124,58,237,.35)}
+.divider{text-align:center;color:rgba(255,255,255,.2);font-size:12px;margin:18px 0}
+.login-link{display:block;text-align:center;padding:12px;border:1.5px solid rgba(255,255,255,.09);border-radius:12px;color:rgba(255,255,255,.55);text-decoration:none;font-size:14px;font-weight:600;transition:all .2s}
+.login-link:hover{border-color:var(--bl);color:var(--bl)}
+.err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:12px 16px;margin-bottom:18px;color:#ef4444;font-size:13px;list-style:none}
+</style></head><body>
+<div class="box">
+  <a href="/" class="logo">🍳 Recipe<span>Hub</span></a>
+  <h1>Join RecipeHub! 🚀</h1>
+  <div class="sub">Create a free account and start sharing recipes today!</div>
+  <form method="POST">
+    {% csrf_token %}
+    {% if form.errors %}<ul class="err">{% for f in form %}{% for e in f.errors %}<li>{{ e }}</li>{% endfor %}{% endfor %}</ul>{% endif %}
+    {{ form.as_p }}
+    <button class="btn" type="submit">🍳 Create Account</button>
+  </form>
+  <div class="divider">— Already Have an Account? —</div>
+  <a href="/login/" class="login-link">🔑 Please Login</a>
+</div>
+</body></html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html><html lang="hi"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Recipes – RecipeHub</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--or:#f97316;--pu:#a78bfa;--bl:#38bdf8;--gn:#22c55e;--bg:#0b1120;--card:#111827;--card2:#1e293b}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:#fff;overflow-x:hidden}
+@keyframes up{from{transform:translateY(28px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes sd{from{transform:translateY(-60px);opacity:0}to{transform:translateY(0);opacity:1}}
+.nav{display:flex;justify-content:space-between;align-items:center;padding:14px 52px;background:rgba(11,17,32,.95);position:sticky;top:0;z-index:100;backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.06);animation:sd .5s ease}
+.logo{font-size:20px;font-weight:900;text-decoration:none;color:#fff}.logo span{color:var(--or)}
+.nav-links{display:flex;align-items:center;gap:2px}
+.nav-links a{color:rgba(255,255,255,.65);text-decoration:none;padding:7px 13px;border-radius:9px;font-size:13px;font-weight:500;transition:all .2s}
+.nav-links a:hover{color:#fff;background:rgba(255,255,255,.07)}
+.nav-links a.act{color:var(--or)}
+.nbtn{padding:8px 18px!important;border-radius:10px!important;font-weight:700!important}
+.nlogin{border:1.5px solid var(--bl)!important;color:var(--bl)!important}.nlogin:hover{background:var(--bl)!important;color:#0b1120!important}
+.nreg{background:linear-gradient(135deg,var(--or),#7c3aed)!important;color:#fff!important}
+.nout{border:1.5px solid rgba(239,68,68,.6)!important;color:#ef4444!important;margin-left:6px!important}.nout:hover{background:#ef4444!important;color:#fff!important}
+.ph{padding:52px 60px 28px;background:linear-gradient(135deg,#1e0a3c,#0b1120);border-bottom:1px solid rgba(255,255,255,.06)}
+.ph h1{font-size:36px;font-weight:900;margin-bottom:6px}.ph p{color:rgba(255,255,255,.45);font-size:14px}
+.sec{padding:40px 60px}
+.search-row{display:flex;gap:10px;margin-bottom:22px;flex-wrap:wrap}
+.si{flex:1;min-width:200px;padding:12px 18px;background:var(--card);border:1.5px solid rgba(255,255,255,.09);border-radius:12px;color:#fff;font-size:14px;outline:none;transition:border .2s}
+.si:focus{border-color:var(--or)}.si::placeholder{color:rgba(255,255,255,.28)}
+select.si{max-width:180px;cursor:pointer}
+select.si option{background:var(--card2)}
+.sbtn{padding:12px 22px;background:linear-gradient(135deg,var(--or),#ea580c);border:none;color:#fff;font-weight:700;border-radius:12px;cursor:pointer;font-size:14px;transition:all .2s}
+.sbtn:hover{opacity:.85}
+.clr{padding:12px 18px;background:var(--card2);border:1.5px solid rgba(255,255,255,.09);border-radius:12px;color:rgba(255,255,255,.6);text-decoration:none;font-size:13px;font-weight:600;transition:all .2s}
+.clr:hover{color:#fff}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.fb{padding:7px 16px;border-radius:50px;font-size:12px;font-weight:700;border:1.5px solid rgba(255,255,255,.11);color:rgba(255,255,255,.5);text-decoration:none;transition:all .2s;background:transparent}
+.fb:hover,.fb.on{background:linear-gradient(135deg,var(--or),#ea580c);color:#fff;border-color:transparent}
+.count{font-size:13px;color:rgba(255,255,255,.35);margin-bottom:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
+.rcard{background:var(--card);border-radius:20px;overflow:hidden;text-decoration:none;color:inherit;transition:all .35s;display:block;animation:up .5s ease both}
+.rcard:hover{transform:translateY(-10px) scale(1.02);box-shadow:0 18px 48px rgba(0,0,0,.5)}
+.rthumb{height:140px;display:flex;align-items:center;justify-content:center;font-size:52px}
+.rbody{padding:18px}
+.rbody h3{font-size:16px;font-weight:700;margin-bottom:5px}
+.rmeta{font-size:12px;color:rgba(255,255,255,.4);margin-bottom:10px}
+.rtag{display:inline-block;padding:3px 9px;border-radius:50px;font-size:11px;font-weight:600;background:rgba(249,115,22,.14);color:var(--or);border:1px solid rgba(249,115,22,.28);margin-right:5px}
+.rtag-b{background:rgba(56,189,248,.12);color:var(--bl);border-color:rgba(56,189,248,.25)}
+.rtag-g{background:rgba(34,197,94,.12);color:var(--gn);border-color:rgba(34,197,94,.25)}
+.add-fab{position:fixed;bottom:30px;right:30px;width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--or),#7c3aed);display:flex;align-items:center;justify-content:center;font-size:28px;text-decoration:none;box-shadow:0 6px 28px rgba(249,115,22,.4);transition:all .25s;z-index:99;color:#fff;font-weight:300;line-height:1}
+.add-fab:hover{transform:scale(1.12) rotate(90deg)}
+.empty{text-align:center;padding:70px 20px;color:rgba(255,255,255,.35);grid-column:1/-1}
+.empty div{font-size:52px;margin-bottom:14px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 26px;border-radius:13px;font-weight:700;font-size:14px;text-decoration:none;transition:all .25s}
+.btn-or{background:linear-gradient(135deg,var(--or),#ea580c);color:#fff}
+.btn-or:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(249,115,22,.35)}
+</style></head><body>
+
+<nav class="nav">
+  <a href="/" class="logo">🍳 Recipe<span>Hub</span></a>
+  <div class="nav-links">
+    {% if user.is_authenticated %}
+      <a href="/">Home</a>
+      <a href="/recipes/" class="act">Recipes</a>
+      <a href="/recipes/add/">+ Add Recipe</a>
+      <a href="/ai-kitchen/">🤖 AI Kitchen</a>
+      <a href="/chat/">Chat</a>
+      <a href="/profile/">Profile</a>
+      <a href="/logout/" class="nbtn nout">Logout</a>
+    {% else %}
+      <a href="/recipes/" class="act">Recipes</a>
+      <a href="/ai-kitchen/">🤖 AI Kitchen</a>
+      <a href="/login/" class="nbtn nlogin">Login</a>
+      <a href="/register/" class="nbtn nreg">Register</a>
+    {% endif %}
+  </div>
+</nav>
+
+<div class="ph">
+  <h1>📚 Recipe Explorer</h1>
+<p>Search, filter, and try the best recipes from the community!</p></div>
+
+<div class="sec">
+  <form method="get" class="search-row">
+    <input class="si" name="q" value="{{ q }}" placeholder="Search recipe names...">
+    <select class="si" name="cat">
+      <option value="">All Categories</option>
+      {% for val,label in categories %}
+      <option value="{{ val }}" {% if cat == val %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+    <button class="sbtn" type="submit">🔍 Search</button>
+    {% if q or cat %}<a href="/recipes/" class="clr">✕ Clear</a>{% endif %}
+  </form>
+
+  <div class="filters">
+    <a href="/recipes/" class="fb {% if not cat %}on{% endif %}">All</a>
+    {% for val,label in categories %}
+    <a href="/recipes/?cat={{ val }}{% if q %}&q={{ q }}{% endif %}" class="fb {% if cat == val %}on{% endif %}">{{ label }}</a>
+    {% endfor %}
+  </div>
+
+  <div class="count">{{ recipes|length }} recipe{% if recipes|length != 1 %}s{% endif %} mili{% if q %} "{{ q }}" ke liye{% endif %}{% if cat %} in {{ cat }}{% endif %}</div>
+
+  <div class="grid">
+    {% for r in recipes %}
+    <a href="/recipes/{{ r.pk }}/" class="rcard" style="animation-delay:{{ forloop.counter0 }}00ms">
+      <div class="rthumb" style="background:linear-gradient(135deg,{% if r.category == 'indian' %}#ea580c,#f97316{% elif r.category == 'italian' %}#2563eb,#38bdf8{% elif r.category == 'dessert' %}#7c3aed,#a78bfa{% elif r.category == 'healthy' %}#059669,#22c55e{% else %}#db2777,#f97316{% endif %})">{{ r.emoji }}</div>
+      <div class="rbody">
+        <h3>{{ r.name }}</h3>
+        <div class="rmeta">By {{ r.author.username }}{% if r.cook_time %} · ⏱ {{ r.cook_time }}{% endif %} · ❤️ {{ r.like_count }}</div>
+        <span class="rtag">{{ r.get_category_display }}</span>
+        {% if r.cook_time %}<span class="rtag rtag-b">⏱ {{ r.cook_time }}</span>{% endif %}
+      </div>
+    </a>
+    {% empty %}
+    <div class="empty">
+      <div>🍳</div>
+      <p style="font-size:16px;margin-bottom:18px">No recipes found!</p>
+      {% if user.is_authenticated %}<a href="/recipes/add/" class="btn btn-or">+ Add Your First Recipe</a>{% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% if user.is_authenticated %}<a href="/recipes/add/" class="add-fab" title="Add Recipe">+</a>{% endif %}
+</body></html>

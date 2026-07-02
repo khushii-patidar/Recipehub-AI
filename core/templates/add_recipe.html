@@ -1,0 +1,131 @@
+<!DOCTYPE html><html lang="hi"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Add Recipe– RecipeHub</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--or:#f97316;--pu:#a78bfa;--bl:#38bdf8;--gn:#22c55e;--bg:#0b1120;--card:#111827;--card2:#1e293b}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:#fff;overflow-x:hidden}
+@keyframes up{from{transform:translateY(28px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes sd{from{transform:translateY(-60px);opacity:0}to{transform:translateY(0);opacity:1}}
+.nav{display:flex;justify-content:space-between;align-items:center;padding:14px 52px;background:rgba(11,17,32,.95);position:sticky;top:0;z-index:100;backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.06);animation:sd .5s ease}
+.logo{font-size:20px;font-weight:900;text-decoration:none;color:#fff}.logo span{color:var(--or)}
+.nav-links{display:flex;align-items:center;gap:2px}
+.nav-links a{color:rgba(255,255,255,.65);text-decoration:none;padding:7px 13px;border-radius:9px;font-size:13px;font-weight:500;transition:all .2s}
+.nav-links a:hover{color:#fff;background:rgba(255,255,255,.07)}
+.nav-links a.act{color:var(--or)}
+.nbtn{padding:8px 18px!important;border-radius:10px!important;font-weight:700!important}
+.nout{border:1.5px solid rgba(239,68,68,.6)!important;color:#ef4444!important;margin-left:6px!important}.nout:hover{background:#ef4444!important;color:#fff!important}
+.ph{padding:52px 60px 28px;background:linear-gradient(135deg,#0a2a1a,#0b1120);border-bottom:1px solid rgba(255,255,255,.06)}
+.ph h1{font-size:34px;font-weight:900;margin-bottom:6px}.ph p{color:rgba(255,255,255,.45);font-size:14px}
+.sec{padding:40px 60px;max-width:760px}
+.form-card{background:var(--card);border-radius:22px;padding:36px;border:1px solid rgba(255,255,255,.06);animation:up .6s ease}
+.form-card h2{font-size:19px;font-weight:800;margin-bottom:8px;color:var(--gn)}
+.tip{background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.18);border-radius:12px;padding:14px 18px;margin-bottom:26px;font-size:13px;color:rgba(255,255,255,.55);line-height:1.6}
+.tip strong{color:var(--or)}
+/* preview card */
+.preview-wrap{margin-bottom:26px}
+.preview-label{font-size:12px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.preview-card{background:var(--card2);border-radius:16px;overflow:hidden;display:flex;align-items:center;gap:0;border:1px solid rgba(255,255,255,.07);transition:all .3s}
+.preview-thumb{width:90px;height:90px;display:flex;align-items:center;justify-content:center;font-size:40px;background:linear-gradient(135deg,#ea580c,#f97316);transition:background .3s;flex-shrink:0}
+.preview-info{padding:14px 18px}
+.preview-info h4{font-size:15px;font-weight:700;margin-bottom:4px;color:rgba(255,255,255,.9)}
+.preview-info p{font-size:12px;color:rgba(255,255,255,.4)}
+/* form styles via Django as_p */
+p{margin-bottom:18px}
+p label{display:block;font-size:12px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px}
+p input[type=text],p select,p textarea{width:100%;padding:13px 16px;background:var(--card2);border:1.5px solid rgba(255,255,255,.09);border-radius:11px;color:#fff;font-size:14px;outline:none;font-family:inherit;transition:border .2s;resize:vertical}
+p input[type=text]:focus,p select:focus,p textarea:focus{border-color:var(--gn)}
+p select option{background:var(--card2)}
+.helptext{font-size:11px;color:rgba(255,255,255,.25);margin-top:5px;display:block}
+ul.errorlist{list-style:none;margin-top:5px}ul.errorlist li{font-size:12px;color:#ef4444}
+.err-box{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:11px;padding:14px 18px;margin-bottom:22px;color:#ef4444;font-size:13px;list-style:none}
+.submit-btn{width:100%;padding:15px;background:linear-gradient(135deg,#059669,var(--gn));border:none;color:#fff;font-weight:700;font-size:16px;border-radius:13px;cursor:pointer;transition:all .25s;margin-top:8px}
+.submit-btn:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(34,197,94,.35)}
+.submit-btn:active{transform:translateY(0)}
+</style></head><body>
+
+<nav class="nav">
+  <a href="/" class="logo">🍳 Recipe<span>Hub</span></a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/recipes/">Recipes</a>
+    <a href="/recipes/add/" class="act">+ Add Recipe</a>
+    <a href="/ai-kitchen/">🤖 AI Kitchen</a>
+    <a href="/chat/">Chat</a>
+    <a href="/profile/">Profile</a>
+    <a href="/logout/" class="nbtn nout">Logout</a>
+  </div>
+</nav>
+
+<div class="ph">
+  <h1>➕ Share Your Recipe</h1>
+  <p>Share your best recipe with the community!</p>
+</div>
+
+<div class="sec">
+  <div class="form-card">
+    <h2>📝 Recipe Details</h2>
+<p style="font-size:13px;color:rgba(255,255,255,.4);margin-bottom:20px;margin-top:4px">
+  First check the preview below, then submit
+</p>
+    <!-- Live Preview -->
+    <div class="preview-wrap">
+      <div class="preview-label">Live Preview</div>
+      <div class="preview-card">
+        <div class="preview-thumb" id="prevThumb">🍽️</div>
+        <div class="preview-info">
+          <h4 id="prevName">Recipe name...</h4>
+          <p id="prevMeta">Category · Cook time</p>
+        </div>
+      </div>
+    </div>
+
+   <div class="tip">
+  <strong>💡 Tips:</strong><br>
+  
+  • Write each ingredient on a separate line in <strong>Ingredients</strong><br>
+  
+  • Write each step on a separate line in <strong>Steps</strong><br>
+  
+  • Choose emojis that match your recipe
+</div>
+
+    {% if form.errors %}
+    <ul class="err-box">
+      {% for field in form %}{% for e in field.errors %}<li>⚠️ {{ field.label }}: {{ e }}</li>{% endfor %}{% endfor %}
+    </ul>
+    {% endif %}
+
+    <form method="POST" id="recipeForm">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="submit-btn" type="submit">🍳  Publish Recipe</button>
+    </form>
+  </div>
+</div>
+
+<script>
+const catColors={
+  indian:'linear-gradient(135deg,#ea580c,#f97316)',
+  italian:'linear-gradient(135deg,#2563eb,#38bdf8)',
+  dessert:'linear-gradient(135deg,#7c3aed,#a78bfa)',
+  healthy:'linear-gradient(135deg,#059669,#22c55e)',
+  street:'linear-gradient(135deg,#db2777,#f97316)',
+  other:'linear-gradient(135deg,#6b7280,#9ca3af)'
+};
+function update(){
+  const name=document.querySelector('[name=name]')?.value||'Recipe\'s name...';
+  const emoji=document.querySelector('[name=emoji]')?.value||'🍽️';
+  const cat=document.querySelector('[name=category]')?.value||'other';
+  const time=document.querySelector('[name=cook_time]')?.value||'';
+  document.getElementById('prevName').textContent=name;
+  document.getElementById('prevThumb').textContent=emoji;
+  document.getElementById('prevThumb').style.background=catColors[cat]||catColors.other;
+  document.getElementById('prevMeta').textContent=(cat||'Category')+(time?' · ⏱ '+time:'');
+}
+document.querySelectorAll('[name=name],[name=emoji],[name=category],[name=cook_time]').forEach(el=>{
+  el.addEventListener('input',update);el.addEventListener('change',update);
+});
+update();
+</script>
+</body></html>
