@@ -242,7 +242,7 @@ def delete_recipe(request, pk):
 def ask_ai(prompt):
     try:
         response = client.chat.completions.create(
-            model="openai/gpt-3.5-turbo",
+            model="nvidia/nemotron-3.5-super-vl:free",
             messages=[
                 {"role": "system", "content": "You are a helpful Indian cooking assistant."},
                 {"role": "user", "content": prompt}
