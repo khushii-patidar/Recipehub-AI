@@ -1,7 +1,7 @@
 from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = 'foodshare-v3-secret-2026'
-DEBUG = True
+SECRET_KEY = os.environ["SECRET_KEY"]
+DEBUG = False
 ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'django.contrib.admin','django.contrib.auth','django.contrib.contenttypes',
